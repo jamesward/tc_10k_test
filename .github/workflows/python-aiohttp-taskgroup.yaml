@@ -12,8 +12,11 @@ jobs:
         nix_path: nixpkgs=channel:nixpkgs-unstable
         github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
+    - uses: atomicjar/testcontainers-cloud-setup-action@main
+      if: ${{ secrets.TC_CLOUD_TOKEN != '' }}
+      env:
+        TC_CLOUD_TOKEN: ${{ secrets.TC_CLOUD_TOKEN }}
+
     - run: |-
         ulimit -n 16000
         nix-shell --run "pytest"
-      env:
-        TC_CLOUD_TOKEN: ${{ secrets.TC_CLOUD_TOKEN }}
