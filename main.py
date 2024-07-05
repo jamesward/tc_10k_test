@@ -34,6 +34,19 @@ class FirstCompletedTaskGroup(asyncio.TaskGroup):
         return self.winner
 
 
+async def scenario1(port: int):
+    async with aiohttp.ClientSession() as session:
+        async def req():
+            async with session.get(url(port, 1)) as response:
+                return await response.text()
+
+        async with FirstCompletedTaskGroup() as group:
+            group.create_task(req())
+            group.create_task(req())
+
+        return group.result()
+
+
 # note: requires increasing max number of open files `ulimit -n 16000`
 async def scenario3(port: int):
     connector = aiohttp.TCPConnector(limit=10_000)
@@ -49,6 +62,9 @@ async def scenario3(port: int):
 
 
 async def main():
+    result1 = await scenario1(8080)
+    print(result1)
+
     result3 = await scenario3(8080)
     print(result3)
 

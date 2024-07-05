@@ -16,6 +16,9 @@ async def test_all():
 
         #@wait_container_is_ready()
         async def connected():
+            result1 = await main.scenario1(port)
+            assert result1 == "right"
+
             result3 = await main.scenario3(port)
             assert result3 == "right"
         await connected()
